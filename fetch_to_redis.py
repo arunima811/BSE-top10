@@ -3,30 +3,38 @@ from zipfile import ZipFile
 from urllib.request import urlopen
 import csv
 import redis
+import json
+import datetime
 
 r = redis.Redis(
     host='127.0.0.1',
     port=6379)
+redisClient = redis.StrictRedis(
+    host='localhost',
+    port=6379)
+host = "https://www.bseindia.com/download/BhavCopy/Equity/"
+today = str(datetime.date.today())
+year, month, day = today.split("-")
 
-resp = urlopen("https://www.bseindia.com/download/BhavCopy/Equity/EQ070219_CSV.ZIP")
+file_name = "EQ{}{}{}".format(int(day) - 2, month, year[2:])
+print(host + file_name + "_CSV.ZIP")
+resp = urlopen(host + file_name + "_CSV.ZIP")
 zipfile = ZipFile(BytesIO(resp.read()))
 
-items_file  = zipfile.open('EQ070219.CSV')
+
+items_file  = zipfile.open(file_name + ".CSV")
 
 items_file  = TextIOWrapper(items_file, encoding='UTF-8', newline='')
 cr = csv.DictReader(items_file)
-
 # redis 
 r.flushdb()
 for row in cr:
-    key = row["SC_CODE"]
+    key = row["SC_NAME"].strip()
     value = {
-        "name": row["SC_NAME"],
-        "open": row["OPEN"],
-        "high": row["HIGH"],
-        "low": row["LOW"], 
-        "close": row["CLOSE"]
+        "Open": row["OPEN"],
+        "High": row["HIGH"],
+        "Low": row["LOW"], 
+        "Close": row["CLOSE"]
     }
-    r.hmset(key, value)
-    
-    
+    redisClient.hset("whole_data", key, value)
+    redisClient.zadd("turnover_based_stocks", row["NET_TURNOV"], row["SC_NAME"])
