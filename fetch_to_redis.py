@@ -1,16 +1,16 @@
 from io import BytesIO, TextIOWrapper
 from zipfile import ZipFile
 from urllib.request import urlopen
+import os
 import csv
 import redis
 import json
 import datetime
 
-r = redis.Redis(
-    host='127.0.0.1',
-    port=6379)
+redis_host = os.environ['REDIS_URl'] or "localhost"
+
 redisClient = redis.StrictRedis(
-    host='localhost',
+    host=redis_host,
     port=6379)
 host = "https://www.bseindia.com/download/BhavCopy/Equity/"
 today = str(datetime.date.today())
