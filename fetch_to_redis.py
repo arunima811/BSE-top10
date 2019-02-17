@@ -9,9 +9,9 @@ import datetime
 
 redis_host = os.getenv('REDIS_URL', 'localhost')
 
-r = redis.Redis(
-    host=redis_host,
-    port=6379)
+# r = redis.Redis(
+#     host=redis_host,
+#     port=6379)
 redisClient = redis.StrictRedis(
     host=redis_host,
     port=6379)
@@ -30,7 +30,7 @@ items_file  = TextIOWrapper(items_file, encoding='UTF-8', newline='')
 cr = csv.DictReader(items_file)
 
 # redis 
-r.flushdb()
+# r.flushdb()
 all_stocks = {}
 net_turnover_stocks = {}
 for row in cr:
