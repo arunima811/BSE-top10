@@ -5,15 +5,8 @@ import os, os.path
 import ast
 env = Environment(loader=FileSystemLoader('templates'))
 
-
-cherrypy.config.update({'server.socket_port': 8090})
 redis_host = os.getenv('REDIS_URL', 'localhost')
-
-redisClient = redis.StrictRedis(
-    host=redis_host,
-    port=6379,
-    charset="utf-8",
-    decode_responses=True)
+redisClient = redis.StrictRedis.from_url(redis_host, charset="utf-8", decode_responses=True)
 
 table_dic = dict(redisClient.zrange("turnover_based_stocks", 0, 10, desc=True, withscores=True))
 company_list = redisClient.hkeys("whole_data")
@@ -37,6 +30,10 @@ class SearchService:
         
 if __name__ == '__main__':
     conf = {
+        'global': {
+            'server.socket_host':  '0.0.0.0',
+            'server.socket_port':  int(os.environ.get('PORT', '5000'))
+        },
         '/': {
             'tools.sessions.on': True,
             'tools.staticdir.root': os.path.abspath(os.getcwd())

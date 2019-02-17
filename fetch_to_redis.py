@@ -9,12 +9,7 @@ import datetime
 
 redis_host = os.getenv('REDIS_URL', 'localhost')
 
-# r = redis.Redis(
-#     host=redis_host,
-#     port=6379)
-redisClient = redis.StrictRedis(
-    host=redis_host,
-    port=6379)
+redisClient = redis.StrictRedis.from_url(redis_host, charset="utf-8", decode_responses=True)
 
 host = "https://www.bseindia.com/download/BhavCopy/Equity/"
 today = str(datetime.date.today())
@@ -30,7 +25,7 @@ items_file  = TextIOWrapper(items_file, encoding='UTF-8', newline='')
 cr = csv.DictReader(items_file)
 
 # redis 
-# r.flushdb()
+redisClient.flushdb()
 all_stocks = {}
 net_turnover_stocks = {}
 for row in cr:
@@ -44,6 +39,5 @@ for row in cr:
     all_stocks[key] = value
     net_turnover_stocks[row["SC_NAME"]] = row["NET_TURNOV"]
     redisClient.hset("whole_data", key, str(value))
-    # redisClient.zadd("turnover_based_stocks", row["NET_TURNOV"], row["SC_NAME"])
-# redisClient.hmset("whole_data", all_stocks)
+
 redisClient.zadd("turnover_based_stocks", net_turnover_stocks)
