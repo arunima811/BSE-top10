@@ -14,7 +14,7 @@
     <div class="main">
 		<form name="Search" method="POST" action="/search_company">
 			<div class="autocomplete" style="width:300px; padding-left: 119px;">
-				<input autocomplete="off" type="text" name="company" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name" />
+				<input autocomplete="off" type="text" name="company" id="myInput" placeholder="Search for stock" />
 			</div>
 			<input type="submit" style="padding-right: 10px;">
 		</form>
@@ -141,10 +141,7 @@
             });
         }
         autocomplete(document.getElementById("myInput"), {{ company_list }});
-    </script>
-
-    </script>
-
+    </script> 
 </body>
 
 </html>

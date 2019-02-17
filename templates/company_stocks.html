@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>BSE Top Stocks</title>
@@ -7,47 +7,20 @@
 </head>
 <body>
 
-<h1><a href="/"> <span class="blue"></span>BSE<span class="blue"></span> <span class="yellow">Equity Stocks</span></a></h1>
-<h2> {{name_of_company}}</h2>
+	<h1><a href="/"> <span class="blue"></span>BSE<span class="blue"></span> <span class="yellow">Equity Stocks</span></a></h1>
+	<h2> {{name_of_company}}</h2>
 
-<div>
-        <table class="container" id="myTable">
-                <tbody>
-                        {% for key, value in company_details.items() %}
-                        <tr>
-                            <td> {{ key }} </td>
-                            <td> ₹ {{ value }} </td>
-                        </tr>
-                     {% endfor %}
-                </tbody>
-            </table>
-</div>
-
-<script>
-
-	
-	// function myFunction() {
-	//   var input, filter, table, tr, td, i, txtValue;
-	//   input = document.getElementById("myInput");
-	//   filter = input.value.toUpperCase();
-	//   table = document.getElementById("myTable");
-	//   tr = table.getElementsByTagName("tr");
-	//   for (i = 0; i < tr.length; i++) {
-	// 	td = tr[i].getElementsByTagName("td")[0];
-	// 	if (td) {
-	// 	  txtValue = td.textContent || td.innerText;
-	// 	  if (txtValue.indexOf(filter) > -1) {
-	// 		tr[i].style.display = "";
-	// 	  } else {
-	// 		tr[i].style.display = "none";
-	// 	  }
-	// 	}       
-	//   }
-	// }
-	</script>
-
-
-
+	<div>
+    <table class="container" id="myTable">
+      <tbody>
+          {% for key, value in company_details.items() %}
+          <tr>
+            <td> {{ key }} </td>
+            <td> ₹ {{ value }} </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+	</div>
 </body>
-
 </html>

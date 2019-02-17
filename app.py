@@ -1,34 +1,37 @@
-import cherrypy
-from jinja2 import Environment, FileSystemLoader
-import redis
-import os, os.path
+import os
 import ast
-env = Environment(loader=FileSystemLoader('templates'))
+import cherrypy
+import redis
+from jinja2 import Environment, FileSystemLoader
 
+env = Environment(loader=FileSystemLoader('templates'))
 redis_host = os.getenv('REDIS_URL', 'localhost')
 redisClient = redis.StrictRedis.from_url(redis_host, charset="utf-8", decode_responses=True)
 
-# Reading from Redis
-table_dic = dict(redisClient.zrange("turnover_based_stocks", 0, 10, desc=True, withscores=True))
+# Read from Redis
+table_dict = dict(redisClient.zrange("turnover_based_stocks", 0, 10, desc=True, withscores=True))
 company_list = redisClient.hkeys("whole_data")
 #print(company_list)
-# Fuction to displaying the top 10 stocks and read the input 
+
+# Display the top 10 stocks and read the input 
 class Root:
     @cherrypy.expose
     def index(self, name = None):
-        print(name)
         template = env.get_template("index.html")
-        return template.render(data = table_dic, company_list= company_list)
-# Function to display the details of the company
+        return template.render(data=table_dict, company_list=company_list)
+
+# Display the details of a company
 @cherrypy.expose
 class SearchService:
     @cherrypy.tools.accept(media='text/html')
     def POST(self, company):
-        stock_details = (redisClient.hget("whole_data", company))
-        stock_details_dict = ast.literal_eval(stock_details)
-        print(type(stock_details_dict))
-        template1 = env.get_template("company_stocks.html")
-        return template1.render(name_of_company = company,company_details = dic_str)
+        stock_details = redisClient.hget("whole_data", company)
+        try:
+            stock_details_dict = ast.literal_eval(stock_details)
+        except ValueError:
+            return "<h2>Error</h2>Invalid stock. Choose a stock from the list."
+        template = env.get_template("company_stocks.html")
+        return template.render(name_of_company = company, company_details = stock_details_dict)
         
 if __name__ == '__main__':
     conf = {
