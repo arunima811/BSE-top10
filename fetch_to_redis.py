@@ -9,12 +9,13 @@ import datetime
 
 redis_host = os.environ['REDIS_URL'] or "localhost"
 
-r = redis.Redis(
-    host=redis_host,
-    port=6379)
+# r = redis.Redis(
+#     host=redis_host,
+#     port=6379)
 redisClient = redis.StrictRedis(
     host=redis_host,
     port=6379)
+
 host = "https://www.bseindia.com/download/BhavCopy/Equity/"
 today = str(datetime.date.today())
 year, month, day = today.split("-")
@@ -27,8 +28,9 @@ zipfile = ZipFile(BytesIO(resp.read()))
 items_file  = zipfile.open(file_name + ".CSV")
 items_file  = TextIOWrapper(items_file, encoding='UTF-8', newline='')
 cr = csv.DictReader(items_file)
+
 # redis 
-r.flushdb()
+#r.flushdb()
 for row in cr:
     key = row["SC_NAME"].strip()
     value = {
