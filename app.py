@@ -7,9 +7,10 @@ env = Environment(loader=FileSystemLoader('templates'))
 
 
 cherrypy.config.update({'server.socket_port': 8090})
+redis_host = os.environ['REDIS_URl'] or "localhost"
 
 redisClient = redis.StrictRedis(
-    host='localhost',
+    host=redis_host,
     port=6379,
     charset="utf-8",
     decode_responses=True)
