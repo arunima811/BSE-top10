@@ -25,7 +25,7 @@ items_file  = zipfile.open(file_name + ".CSV")
 items_file  = TextIOWrapper(items_file, encoding='UTF-8', newline='')
 cr = csv.DictReader(items_file)
 # redis 
-r.flushdb()
+redisClient.flushdb()
 for row in cr:
     key = row["SC_NAME"].strip()
     value = {
