@@ -7,25 +7,27 @@ import redis
 import json
 import datetime
 
+# Connecting to redis
 redis_host = os.getenv('REDIS_URL', 'localhost')
-
 redisClient = redis.StrictRedis.from_url(redis_host, charset="utf-8", decode_responses=True)
 
+# Fetching zip from bseIndia
 host = "https://www.bseindia.com/download/BhavCopy/Equity/"
 today = str(datetime.date.today())
 year, month, day = today.split("-")
-
 file_name = "EQ{}{}{}".format(int(day) - 2, month, year[2:])
-print(host + file_name + "_CSV.ZIP")
+# Print(host + file_name + "_CSV.ZIP")
+# Extracting the csv
 resp = urlopen(host + file_name + "_CSV.ZIP")
 zipfile = ZipFile(BytesIO(resp.read()))
-
 items_file  = zipfile.open(file_name + ".CSV")
+# Reading CSV
 items_file  = TextIOWrapper(items_file, encoding='UTF-8', newline='')
 cr = csv.DictReader(items_file)
 
-# redis 
 redisClient.flushdb()
+
+# Creating hashmaps for Searching and Sortedsets for finding top 10 stocks
 all_stocks = {}
 net_turnover_stocks = {}
 for row in cr:

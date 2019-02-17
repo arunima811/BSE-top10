@@ -8,23 +8,25 @@ env = Environment(loader=FileSystemLoader('templates'))
 redis_host = os.getenv('REDIS_URL', 'localhost')
 redisClient = redis.StrictRedis.from_url(redis_host, charset="utf-8", decode_responses=True)
 
+# Reading from Redis
 table_dic = dict(redisClient.zrange("turnover_based_stocks", 0, 10, desc=True, withscores=True))
 company_list = redisClient.hkeys("whole_data")
 #print(company_list)
+# Fuction to displaying the top 10 stocks and read the input 
 class Root:
     @cherrypy.expose
     def index(self, name = None):
         print(name)
         template = env.get_template("index.html")
         return template.render(data = table_dic, company_list= company_list)
-
+# Function to display the details of the company
 @cherrypy.expose
 class SearchService:
     @cherrypy.tools.accept(media='text/html')
     def POST(self, company):
-        my_str = (redisClient.hget("whole_data", company))
-        dic_str = ast.literal_eval(my_str)
-        print(type(dic_str))
+        stock_details = (redisClient.hget("whole_data", company))
+        stock_details_dict = ast.literal_eval(stock_details)
+        print(type(stock_details_dict))
         template1 = env.get_template("company_stocks.html")
         return template1.render(name_of_company = company,company_details = dic_str)
         
