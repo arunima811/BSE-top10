@@ -21,9 +21,7 @@ print(host + file_name + "_CSV.ZIP")
 resp = urlopen(host + file_name + "_CSV.ZIP")
 zipfile = ZipFile(BytesIO(resp.read()))
 
-
 items_file  = zipfile.open(file_name + ".CSV")
-
 items_file  = TextIOWrapper(items_file, encoding='UTF-8', newline='')
 cr = csv.DictReader(items_file)
 # redis 

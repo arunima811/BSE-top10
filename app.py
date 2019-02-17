@@ -1,6 +1,5 @@
 import cherrypy
 from jinja2 import Environment, FileSystemLoader
-from mako.template import Template
 import redis
 import os, os.path
 import ast
@@ -37,11 +36,7 @@ class SearchService:
         
 if __name__ == '__main__':
     conf = {
-        'global': {
-            'server.socket_host': '0.0.0.0',
-            'server.socket_port': int(os.environ.get('PORT', 5000)),
-    	},
-	'/': {
+        '/': {
             'tools.sessions.on': True,
             'tools.staticdir.root': os.path.abspath(os.getcwd())
         },
