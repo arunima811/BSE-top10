@@ -7,7 +7,7 @@ import redis
 import json
 import datetime
 
-redis_host = os.environ['REDIS_URl'] or "localhost"
+redis_host = os.environ['REDIS_URL'] or "localhost"
 
 redisClient = redis.StrictRedis(
     host=redis_host,
