@@ -7,11 +7,11 @@ import redis
 import json
 import datetime
 
-redis_host = os.environ['REDIS_URL'] or "localhost"
+redis_host = os.getenv('REDIS_URL', 'localhost')
 
-# r = redis.Redis(
-#     host=redis_host,
-#     port=6379)
+r = redis.Redis(
+    host=redis_host,
+    port=6379)
 redisClient = redis.StrictRedis(
     host=redis_host,
     port=6379)
@@ -30,7 +30,9 @@ items_file  = TextIOWrapper(items_file, encoding='UTF-8', newline='')
 cr = csv.DictReader(items_file)
 
 # redis 
-#r.flushdb()
+r.flushdb()
+all_stocks = {}
+net_turnover_stocks = {}
 for row in cr:
     key = row["SC_NAME"].strip()
     value = {
@@ -39,5 +41,9 @@ for row in cr:
         "Low": row["LOW"], 
         "Close": row["CLOSE"]
     }
-    redisClient.hset("whole_data", key, value)
-    redisClient.zadd("turnover_based_stocks", row["NET_TURNOV"], row["SC_NAME"])
+    all_stocks[key] = value
+    net_turnover_stocks[row["SC_NAME"]] = row["NET_TURNOV"]
+    redisClient.hset("whole_data", key, str(value))
+    # redisClient.zadd("turnover_based_stocks", row["NET_TURNOV"], row["SC_NAME"])
+# redisClient.hmset("whole_data", all_stocks)
+redisClient.zadd("turnover_based_stocks", net_turnover_stocks)
