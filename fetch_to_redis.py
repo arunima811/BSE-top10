@@ -9,6 +9,9 @@ import datetime
 
 redis_host = os.environ['REDIS_URL'] or "localhost"
 
+r = redis.Redis(
+    host=redis_host,
+    port=6379)
 redisClient = redis.StrictRedis(
     host=redis_host,
     port=6379)
@@ -25,7 +28,7 @@ items_file  = zipfile.open(file_name + ".CSV")
 items_file  = TextIOWrapper(items_file, encoding='UTF-8', newline='')
 cr = csv.DictReader(items_file)
 # redis 
-redisClient.flushdb()
+r.flushdb()
 for row in cr:
     key = row["SC_NAME"].strip()
     value = {
