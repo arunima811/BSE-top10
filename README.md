@@ -22,4 +22,4 @@ sudo crontab -e
 
 # Live Demo
 
-[Heroku App](https://boiling-sea-89162.herokuapp.com/)
+[Website](https://boiling-sea-89162.herokuapp.com/)
